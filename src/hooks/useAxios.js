@@ -32,7 +32,7 @@ const useAxios = (configObj) => {
     return () => controller.abort();
   }, []);
 
-  return {response, error, loading};
+  return [response, error, loading];
 };
 
 export default useAxios;
