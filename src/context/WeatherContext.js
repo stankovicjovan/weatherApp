@@ -5,6 +5,7 @@ import axios from "../apis/WeatherApi";
 const WeatherContext = createContext();
 
 export function WeatherProvider({ children }) {
+  const [latitude,longitude]= useGeolocation();
   const [response, error, loading] = useAxios({
     axiosInstance: axios,
     method: "GET",
