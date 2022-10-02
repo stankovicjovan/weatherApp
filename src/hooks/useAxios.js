@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
+import useGeolocation from "./useGeolocation";
 
 const useAxios = (configObj) => {
   const { axiosInstance, method, url, requestConfig = {} } = configObj;
+  // getting geolocation and making condition to see if we get actual data
+  const [latitude, longitude] = useGeolocation();
+  const geoLocationReady = latitude && longitude ? true : false;
 
   const [response, setResponse] = useState([]);
   const [error, setError] = useState("");
@@ -27,10 +31,12 @@ const useAxios = (configObj) => {
       }
     };
 
-    fetchData();
+    // fetch data based on weather we get geoLocation or not
+    if (geoLocationReady) fetchData();
     // cleanup
     return () => controller.abort();
-  }, []);
+    // dependency can be url or geoLocationReady
+  }, [url]);
 
   return [response, error, loading];
 };

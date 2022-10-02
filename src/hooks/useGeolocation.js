@@ -9,7 +9,7 @@ const useGeolocation = () => {
       setLatitude(position.coords.latitude);
       setLongitude(position.coords.longitude);
     });
-  }, []);
+  }, [latitude, longitude]);
 
   return [latitude, longitude];
 };
