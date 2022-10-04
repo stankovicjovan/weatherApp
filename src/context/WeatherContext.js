@@ -11,10 +11,10 @@ export function WeatherProvider({ children }) {
     longitude
   ).toFixed(2)}`;
 
-  const [response, error, loading] = useAxios({
+  const [responseForecast, errorForecast, loadingForecast] = useAxios({
     axiosInstance: axios,
     method: "GET",
-    url: `forecast.json?key=${process.env.REACT_APP_API_KEY}${GET_LOCATION}`,
+    url: `forecast.json?key=${process.env.REACT_APP_API_KEY}${GET_LOCATION}&days=5`,
     requestConfig: {
       headers: {
         "Content-Language": "en-US",
@@ -22,7 +22,9 @@ export function WeatherProvider({ children }) {
     },
   });
   return (
-    <WeatherContext.Provider value={{ response, error, loading }}>
+    <WeatherContext.Provider
+      value={{ responseForecast, errorForecast, loadingForecast }}
+    >
       {children}
     </WeatherContext.Provider>
   );
