@@ -7,7 +7,6 @@ const WeatherContext = createContext();
 
 export function WeatherProvider({ children }) {
   const [latitude, longitude] = useGeolocation();
-
   let GET_LOCATION = `&q=${Number(latitude).toFixed(2)},${Number(
     longitude
   ).toFixed(2)}`;

@@ -1,7 +1,11 @@
 import { useEffect, useState, useContext } from "react";
+import WeatherContext from "../context/WeatherContext";
+import useGeolocation from "./useGeolocation";
 
 const useAxios = (configObj) => {
   const { axiosInstance, method, url, requestConfig = {} } = configObj;
+
+  const [geoLocationReady] = useGeolocation();
 
   const [response, setResponse] = useState([]);
   const [error, setError] = useState("");
@@ -16,19 +20,15 @@ const useAxios = (configObj) => {
           ...requestConfig,
           signal: controller.signal,
         });
-
-        console.log(res);
         setResponse(res.data);
       } catch (err) {
-        console.log(err.message);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
     // fetch data based on weather we get geoLocation or not
-    fetchData();
+    if (geoLocationReady) fetchData();
     // cleanup
     return () => controller.abort();
     // dependency can be url or geoLocationReady
