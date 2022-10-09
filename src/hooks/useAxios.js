@@ -1,5 +1,4 @@
-import { useEffect, useState, useContext } from "react";
-import WeatherContext from "../context/WeatherContext";
+import { useEffect, useState } from "react";
 import useGeolocation from "./useGeolocation";
 
 const useAxios = (configObj) => {
