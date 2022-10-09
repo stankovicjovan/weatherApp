@@ -1,6 +1,7 @@
-import WeatherContext from "../context/WeatherContext";
 import { useContext, useState } from "react";
 import { GoLocation } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
+import WeatherContext from "../context/WeatherContext";
 
 const MainPage = () => {
   const { responseForecast, errorForecast, loadingForecast } =
@@ -8,9 +9,15 @@ const MainPage = () => {
 
   const [celisToFahr, setCelisToFahr] = useState(false);
 
+  const navigate = useNavigate();
+
   const changeUnit = (e) => {
     e.preventDefault();
     setCelisToFahr(!celisToFahr);
+  };
+
+  const changePage = (queryParam) => {
+    navigate(`/detail-page/${queryParam}`);
   };
 
   return (
@@ -35,11 +42,18 @@ const MainPage = () => {
             </span>
           </span>
           <div className="flex flex-col align-center mt-4">
-            <div className="text-8xl">
+            <div
+              className="text-8xl hover:cursor-pointer"
+              onClick={() =>
+                changePage(responseForecast?.forecast.forecastday[0]?.date)
+              }
+            >
               {celisToFahr
-                ? responseForecast?.current?.temp_f
-                : responseForecast?.current?.temp_c}
-              <span className="ml-4 text-6xl">{celisToFahr ? "°F" : "°C"}</span>
+                ? responseForecast?.current.temp_f
+                : responseForecast?.current.temp_c}
+              <span className="ml-4 text-6xl hover:cursor-pointer">
+                {celisToFahr ? "°F" : "°C"}
+              </span>
             </div>
             <div
               className="mt-4 pb-6 w-full flex justify-center gap-4
@@ -54,32 +68,33 @@ const MainPage = () => {
               <div className="flex justify-center gap-2 w-fit mx-0">
                 <div className="text-xl mx-0">
                   {celisToFahr
-                    ? responseForecast?.forecast?.forecastday[0]?.day?.mintemp_f
-                    : responseForecast?.forecast?.forecastday[0]?.day
-                        ?.mintemp_c}
+                    ? responseForecast?.forecast.forecastday[0]?.day.mintemp_f
+                    : responseForecast?.forecast.forecastday[0]?.day?.mintemp_c}
                   <span className="ml-1">{celisToFahr ? "°F" : "°C"}</span>
                 </div>
                 <span className="mx-0">—</span>
                 <div className="text-xl mx-0">
                   {celisToFahr
-                    ? responseForecast?.forecast?.forecastday[0]?.day?.maxtemp_f
-                    : responseForecast?.forecast?.forecastday[0]?.day
-                        ?.maxtemp_c}
+                    ? responseForecast?.forecast.forecastday[0]?.day.maxtemp_f
+                    : responseForecast?.forecast.forecastday[0]?.day?.maxtemp_c}
                   <span className="ml-1">{celisToFahr ? "°F" : "°C"}</span>
                 </div>
               </div>
             </div>
-            <div className="mt-5 flex gap-2 justify-evenly w-full">
-              {responseForecast?.forecast?.forecastday.slice(1).map((item) => (
+            <div className="mt-5 flex gap-1 xs:gap-2 justify-evenly w-full">
+              {responseForecast?.forecast.forecastday?.slice(1).map((item) => (
                 <div
+                  onClick={() => changePage(item?.date)}
                   key={item.date}
-                  className="flex flex-col items-center m-0 p-2 xs:p-4 sm:px-8  border border-blue-300 rounded-md hover:bg-blue-400 hover:cursor-pointer ease-in-out duration-300"
+                  className="flex flex-col items-center m-0 px-4 xs:px-6 xs:py-2 sm:px-8  border border-blue-300 rounded-md hover:bg-blue-400 hover:cursor-pointer ease-in-out duration-300"
                 >
                   <span className="pb-2 mb-2 border-b border-blue-300 w-full text-center hover:cursor-pointer">
                     {item.date.slice(5)}
                   </span>
                   <div className="text-lg xs:text-xl">
-                    {celisToFahr ? item.day.maxtemp_f : item.day.maxtemp_c}
+                    {celisToFahr
+                      ? item.day.maxtemp_f.toFixed(1)
+                      : item.day.maxtemp_c.toFixed(1)}
                     <span className="xs:ml-1 text-sm">
                       {celisToFahr ? "°F" : "°C"}
                     </span>
@@ -90,7 +105,9 @@ const MainPage = () => {
                     alt=""
                   />
                   <div className="text-lg xs:text-xl">
-                    {celisToFahr ? item.day.mintemp_f : item.day.mintemp_c}
+                    {celisToFahr
+                      ? item.day.mintemp_f.toFixed(1)
+                      : item.day.mintemp_c.toFixed(1)}
                     <span className="xs:ml-1 text-sm">
                       {celisToFahr ? "°F" : "°C"}
                     </span>

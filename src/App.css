@@ -36,3 +36,18 @@ label {
 button {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* custom scroll */
+::-webkit-scrollbar {
+  @apply h-2;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply shadow-sm rounded-md;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-blue-300 rounded-xl;
+}
