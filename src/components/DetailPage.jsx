@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import WeatherContext from "../context/WeatherContext";
 import { GoLocation } from "react-icons/go";
 import { BsSunrise, BsSunset } from "react-icons/bs";
+import { WiMoonset, WiMoonrise } from "react-icons/wi";
 import "../App.css";
 
 const DetailPage = () => {
@@ -11,6 +12,15 @@ const DetailPage = () => {
 
   const location = useLocation();
   const queryDate = location.pathname.slice(-10);
+
+  const currentTime = new Date().toLocaleTimeString().slice(0, 2).includes(":")
+    ? `0${new Date().toLocaleTimeString().slice(0, 4)}`
+    : new Date().toLocaleTimeString().slice(0, 5);
+
+  console.log(new Date().getTime());
+
+  const beforeMidday =
+    new Date().toLocaleTimeString().slice(-2) === "AM" ? true : false;
 
   return (
     <div className="container bg-blue-500 h-screen p-2 sm:p-4">
@@ -51,13 +61,41 @@ const DetailPage = () => {
                   </div>
                   <div className="flex gap-4">
                     <span className="flex gap-2">
-                      <BsSunrise className="text-2xl" />
-                      <span className="text-lg">{item.astro.sunrise}</span>
+                      {beforeMidday &&
+                      currentTime < item.astro.sunrise.slice(0, 5) ? (
+                        <WiMoonset className="text-2xl" />
+                      ) : !beforeMidday && currentTime > item.astro.sunset ? (
+                        <BsSunrise className="text-2xl" />
+                      ) : (
+                        <WiMoonset className="text-2xl" />
+                      )}
+                      <span className="text-lg">
+                        {beforeMidday &&
+                        currentTime < item.astro.sunrise.slice(0, 5)
+                          ? item.astro.moonset
+                          : !beforeMidday && currentTime > item.astro.sunset
+                          ? item.astro.sunrise
+                          : item.astro.moonset}
+                      </span>
                     </span>
                     —
                     <span className="flex gap-2">
-                      <span className="text-lg"> {item.astro.sunset}</span>
-                      <BsSunset className="text-2xl" />
+                      <span className="text-lg">
+                        {beforeMidday &&
+                        currentTime < item.astro.sunrise.slice(0, 5)
+                          ? item.astro.moonrise
+                          : !beforeMidday && currentTime > item.astro.sunset
+                          ? item.astro.sunset
+                          : item.astro.moonrise}
+                      </span>
+                      {beforeMidday &&
+                      currentTime < item.astro.sunrise.slice(0, 5) ? (
+                        <WiMoonrise className="text-2xl" />
+                      ) : !beforeMidday && currentTime > item.astro.sunset ? (
+                        <BsSunset className="text-2xl" />
+                      ) : (
+                        <WiMoonrise className="text-2xl" />
+                      )}
                     </span>
                   </div>
                 </div>
