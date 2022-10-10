@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import WeatherContext from "../context/WeatherContext";
 import { GoLocation } from "react-icons/go";
 import { BsSunrise, BsSunset } from "react-icons/bs";
 import { WiMoonset, WiMoonrise } from "react-icons/wi";
+import { TbWind } from "react-icons/tb";
 import "../App.css";
 
 const DetailPage = () => {
@@ -13,6 +14,13 @@ const DetailPage = () => {
   const location = useLocation();
   const queryDate = location.pathname.slice(-10);
 
+  const [kmToMh, setKmToMh] = useState(false);
+
+  const changeUnit = (e) => {
+    e.preventDefault();
+    setKmToMh(!kmToMh);
+  };
+
   return (
     <div className="container bg-blue-500 h-screen p-2 sm:p-4">
       {loadingForecast && (
@@ -21,7 +29,7 @@ const DetailPage = () => {
       {!loadingForecast && errorForecast && (
         <p className="text-red mx-auto pt-1/2">{errorForecast}</p>
       )}
-      <div className="pt-16">
+      <div className="pt-4">
         {!loadingForecast &&
           !errorForecast &&
           responseForecast.forecast &&
@@ -98,6 +106,17 @@ const DetailPage = () => {
                     ))}
                   </div>
                 </div>
+                <button
+                  onClick={changeUnit}
+                  className="mt-4 px-2 py-4 border rounded-3xl hover:bg-blue-400 hover:cursor-pointer ease-in-out duration-300"
+                >
+                  <TbWind className="text-2xl mb-2" />
+                  <span className="mr-1 cursor-pointer">
+                    {kmToMh
+                      ? `${responseForecast?.current?.wind_kph} km/h`
+                      : `${responseForecast?.current?.wind_mph} m/h`}
+                  </span>
+                </button>
               </section>
             ))}
       </div>
