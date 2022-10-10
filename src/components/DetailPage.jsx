@@ -13,15 +13,6 @@ const DetailPage = () => {
   const location = useLocation();
   const queryDate = location.pathname.slice(-10);
 
-  const currentTime = new Date().toLocaleTimeString().slice(0, 2).includes(":")
-    ? `0${new Date().toLocaleTimeString().slice(0, 4)}`
-    : new Date().toLocaleTimeString().slice(0, 5);
-
-  console.log(new Date().getTime());
-
-  const beforeMidday =
-    new Date().toLocaleTimeString().slice(-2) === "AM" ? true : false;
-
   return (
     <div className="container bg-blue-500 h-screen p-2 sm:p-4">
       {loadingForecast && (
@@ -61,40 +52,28 @@ const DetailPage = () => {
                   </div>
                   <div className="flex gap-4">
                     <span className="flex gap-2">
-                      {beforeMidday &&
-                      currentTime < item.astro.sunrise.slice(0, 5) ? (
+                      {responseForecast.current.is_day === 0 ? (
                         <WiMoonset className="text-2xl" />
-                      ) : !beforeMidday && currentTime > item.astro.sunset ? (
-                        <BsSunrise className="text-2xl" />
                       ) : (
-                        <WiMoonset className="text-2xl" />
+                        <BsSunrise className="text-2xl" />
                       )}
                       <span className="text-lg">
-                        {beforeMidday &&
-                        currentTime < item.astro.sunrise.slice(0, 5)
+                        {responseForecast.current.is_day === 0
                           ? item.astro.moonset
-                          : !beforeMidday && currentTime > item.astro.sunset
-                          ? item.astro.sunrise
-                          : item.astro.moonset}
+                          : item.astro.sunrise}
                       </span>
                     </span>
                     —
                     <span className="flex gap-2">
                       <span className="text-lg">
-                        {beforeMidday &&
-                        currentTime < item.astro.sunrise.slice(0, 5)
+                        {responseForecast.current.is_day === 0
                           ? item.astro.moonrise
-                          : !beforeMidday && currentTime > item.astro.sunset
-                          ? item.astro.sunset
-                          : item.astro.moonrise}
+                          : item.astro.sunset}
                       </span>
-                      {beforeMidday &&
-                      currentTime < item.astro.sunrise.slice(0, 5) ? (
+                      {responseForecast.current.is_day === 0 ? (
                         <WiMoonrise className="text-2xl" />
-                      ) : !beforeMidday && currentTime > item.astro.sunset ? (
-                        <BsSunset className="text-2xl" />
                       ) : (
-                        <WiMoonrise className="text-2xl" />
+                        <BsSunset className="text-2xl" />
                       )}
                     </span>
                   </div>
