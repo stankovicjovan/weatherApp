@@ -7,13 +7,13 @@ const MainPage = () => {
   const { responseForecast, errorForecast, loadingForecast } =
     useContext(WeatherContext);
 
-  const [celisToFahr, setCelisToFahr] = useState(false);
+  const [temperatureUnit, setTemperatureUnit] = useState(false);
 
   const navigate = useNavigate();
 
   const changeUnit = (e) => {
     e.preventDefault();
-    setCelisToFahr(!celisToFahr);
+    setTemperatureUnit(!temperatureUnit);
   };
 
   const changePage = (queryParam) => {
@@ -48,11 +48,11 @@ const MainPage = () => {
                 changePage(responseForecast?.forecast.forecastday[0]?.date)
               }
             >
-              {celisToFahr
+              {temperatureUnit
                 ? responseForecast?.current.temp_f
                 : responseForecast?.current.temp_c}
               <span className="ml-4 text-6xl hover:cursor-pointer">
-                {celisToFahr ? "°F" : "°C"}
+                {temperatureUnit ? "°F" : "°C"}
               </span>
             </div>
             <div
@@ -63,21 +63,21 @@ const MainPage = () => {
                 className="px-2 py-1 border border-blue-300 rounded-md hover:bg-blue-400 ease-in-out duration-300"
                 onClick={changeUnit}
               >
-                {celisToFahr ? "To Celsius" : "To Fahrenheit"}
+                {temperatureUnit ? "To Celsius" : "To Fahrenheit"}
               </button>
               <div className="flex justify-center gap-2 w-fit mx-0">
                 <div className="text-xl mx-0">
-                  {celisToFahr
+                  {temperatureUnit
                     ? responseForecast?.forecast.forecastday[0]?.day.mintemp_f
                     : responseForecast?.forecast.forecastday[0]?.day?.mintemp_c}
-                  <span className="ml-1">{celisToFahr ? "°F" : "°C"}</span>
+                  <span className="ml-1">{temperatureUnit ? "°F" : "°C"}</span>
                 </div>
                 <span className="mx-0">—</span>
                 <div className="text-xl mx-0">
-                  {celisToFahr
+                  {temperatureUnit
                     ? responseForecast?.forecast.forecastday[0]?.day.maxtemp_f
                     : responseForecast?.forecast.forecastday[0]?.day?.maxtemp_c}
-                  <span className="ml-1">{celisToFahr ? "°F" : "°C"}</span>
+                  <span className="ml-1">{temperatureUnit ? "°F" : "°C"}</span>
                 </div>
               </div>
             </div>
@@ -92,11 +92,11 @@ const MainPage = () => {
                     {item.date.slice(5)}
                   </span>
                   <div className="text-lg xs:text-xl">
-                    {celisToFahr
+                    {temperatureUnit
                       ? item.day.maxtemp_f.toFixed(1)
                       : item.day.maxtemp_c.toFixed(1)}
                     <span className="xs:ml-1 text-sm">
-                      {celisToFahr ? "°F" : "°C"}
+                      {temperatureUnit ? "°F" : "°C"}
                     </span>
                   </div>
                   <img
@@ -105,11 +105,11 @@ const MainPage = () => {
                     alt=""
                   />
                   <div className="text-lg xs:text-xl">
-                    {celisToFahr
+                    {temperatureUnit
                       ? item.day.mintemp_f.toFixed(1)
                       : item.day.mintemp_c.toFixed(1)}
                     <span className="xs:ml-1 text-sm">
-                      {celisToFahr ? "°F" : "°C"}
+                      {temperatureUnit ? "°F" : "°C"}
                     </span>
                   </div>
                 </div>

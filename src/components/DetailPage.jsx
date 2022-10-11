@@ -2,9 +2,10 @@ import React, { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import WeatherContext from "../context/WeatherContext";
 import { GoLocation } from "react-icons/go";
-import { BsSunrise, BsSunset } from "react-icons/bs";
+import { BsSunrise, BsSunset, BsDroplet, BsCloudRain } from "react-icons/bs";
 import { WiMoonset, WiMoonrise } from "react-icons/wi";
-import { TbWind } from "react-icons/tb";
+import { TbWind, TbGauge, TbTemperature } from "react-icons/tb";
+import { ImArrowUp2, ImArrowDown2 } from "react-icons/im";
 import "../App.css";
 
 const DetailPage = () => {
@@ -14,11 +15,11 @@ const DetailPage = () => {
   const location = useLocation();
   const queryDate = location.pathname.slice(-10);
 
-  const [kmToMh, setKmToMh] = useState(false);
+  const [distanceUnit, setDistanceUnit] = useState(true);
 
   const changeUnit = (e) => {
     e.preventDefault();
-    setKmToMh(!kmToMh);
+    setDistanceUnit(!distanceUnit);
   };
 
   return (
@@ -44,7 +45,7 @@ const DetailPage = () => {
                   <span className="flex justify-center items-center text-center text-3xl sm:text-4xl">
                     <img
                       className="w-12 h-12 sm:w-14 sm:h-14 ml-0"
-                      src={responseForecast?.current?.condition?.icon}
+                      src={item.day?.condition?.icon}
                       alt=""
                     />
                     <h1>{responseForecast?.location?.name}</h1>
@@ -53,7 +54,7 @@ const DetailPage = () => {
                     </span>
                   </span>
                   <div className="text-6xl hover:cursor-pointer mb-3">
-                    {responseForecast?.current.temp_c}
+                    {item.day?.avgtemp_c}
                     <span className="ml-4 text-4xl hover:cursor-pointer">
                       °C
                     </span>
@@ -86,7 +87,11 @@ const DetailPage = () => {
                     </span>
                   </div>
                 </div>
-                <div key={item.date} className="py-1 px-2 border-y-2">
+                <div
+                  id="hourlyCast"
+                  key={item.date}
+                  className="py-1 px-2 border-y-2"
+                >
                   <div
                     className="py-1 flex gap-5 xs:gap-8 sm:gap-10 overflow-x-scroll"
                     key={item.date}
@@ -106,17 +111,91 @@ const DetailPage = () => {
                     ))}
                   </div>
                 </div>
-                <button
-                  onClick={changeUnit}
-                  className="mt-4 px-2 py-4 border rounded-3xl hover:bg-blue-400 hover:cursor-pointer ease-in-out duration-300"
-                >
-                  <TbWind className="text-2xl mb-2" />
-                  <span className="mr-1 cursor-pointer">
-                    {kmToMh
-                      ? `${responseForecast?.current?.wind_kph} km/h`
-                      : `${responseForecast?.current?.wind_mph} m/h`}
-                  </span>
-                </button>
+                <div id="extraInfo" className="grid grid-cols-3 sm:grid-cols-6">
+                  <button
+                    name="avgWindSpeed"
+                    onClick={changeUnit}
+                    className="justify-self-center mt-4 p-1 w-24 h-24 border rounded-3xl hover:bg-blue-400 hover:cursor-pointer ease-in-out duration-300"
+                  >
+                    <TbWind className="text-2xl mb-2" />
+                    <span className="mr-1 cursor-pointer">
+                      {`${(
+                        item.hour
+                          .map((item) =>
+                            distanceUnit ? item.wind_kph : item.wind_mph
+                          )
+                          .reduce((cur, sum) => cur + sum, 0) / 24
+                      ).toFixed(2)} ${distanceUnit ? "kph" : "mph"}`}
+                    </span>
+                  </button>
+                  <button
+                    name="humidity"
+                    className="justify-self-center mt-4 p-1 w-24 h-24 border rounded-3xl cursor-auto"
+                  >
+                    <BsDroplet className="text-2xl mb-2" />
+                    <span>{item.day.avghumidity} %</span>
+                  </button>
+                  <button
+                    name="avgPressure"
+                    className="justify-self-center mt-4 p-1 w-24 h-24 border rounded-3xl cursor-auto"
+                  >
+                    <TbGauge className="text-2xl mb-2" />
+                    <span className="mr-1">
+                      {(
+                        item.hour
+                          .map((item) => item.pressure_mb)
+                          .reduce((cur, sum) => cur + sum, 0) / 24
+                      ).toFixed(0)}
+                      mbar
+                    </span>
+                  </button>
+                  <button
+                    name="uvIndex"
+                    className="justify-self-center mt-4 p-1 w-24 h-24 border rounded-3xl cursor-auto flex flex-col"
+                  >
+                    <span className="mb-2 font-black">UV</span>
+                    <span className="mt-0">
+                      {item.day.uv} mW/m
+                      <span className="text-xs absolute">2</span>
+                    </span>
+                  </button>
+                  <button
+                    name="feelsLike"
+                    className="justify-self-center mt-4 p-1 w-24 h-24 border rounded-3xl cursor-auto"
+                  >
+                    <span className="flex justify-center">
+                      <TbTemperature className="text-2xl mb-2 mx-0" />
+                      <span className="mx-0">
+                        {item.hour
+                          .map((item) => item.feelslike_c)
+                          .reduce((cur, sum) => cur + sum, 0) /
+                          24 >
+                        item.day.avgtemp_c ? (
+                          <ImArrowUp2 className="text-red-400" />
+                        ) : (
+                          <ImArrowDown2 className="text-blue-400" />
+                        )}
+                      </span>
+                    </span>
+                    <span className="mr-1">
+                      {(
+                        item.hour
+                          .map((item) => item.feelslike_c)
+                          .reduce((cur, sum) => cur + sum, 0) / 24
+                      ).toFixed(1)}{" "}
+                      °C
+                    </span>
+                  </button>
+                  <button
+                    name="rainChance"
+                    className="justify-self-center mt-4 p-1 w-24 h-24 border rounded-3xl cursor-auto"
+                  >
+                    <span className="flex justify-center">
+                      <BsCloudRain className="text-2xl mb-2 mx-0" />
+                    </span>
+                    <span>{item.day.daily_chance_of_rain} %</span>
+                  </button>
+                </div>
               </section>
             ))}
       </div>
