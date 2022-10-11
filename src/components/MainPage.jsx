@@ -21,7 +21,7 @@ const MainPage = () => {
   };
 
   return (
-    <div className="container bg-blue-500 h-screen">
+    <div className="max-w-3xl bg-blue-500 h-screen">
       {loadingForecast && (
         <h1 className="text-center pt-48 text-4xl">LoadingForecast...</h1>
       )}

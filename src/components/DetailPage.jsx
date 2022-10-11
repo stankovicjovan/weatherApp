@@ -23,7 +23,7 @@ const DetailPage = () => {
   };
 
   return (
-    <div className="container bg-blue-500 h-screen p-2 sm:p-4">
+    <div className="max-w-3xl bg-blue-500 h-screen p-2 sm:p-4">
       {loadingForecast && (
         <h1 className="text-center pt-48 text-4xl">LoadingForecast...</h1>
       )}
